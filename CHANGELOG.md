@@ -3,6 +3,27 @@
 Toutes les notable changes à FCK MULTI TOOL sont documentées ici.
 Format inspiré de [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.2.0] — 2026-09-28
+
+### Ajouté
+
+- **12 nouveaux modules** (47 → 59) :
+  - Réseau (12) : Trace-HTTP — serveur de traçage local (journal JSONL, dashboard, ip-api, tunnel cloudflared indicatif), métadonnées visiteurs uniquement, aucune page de collecte de clés.
+  - Web (23–25) : Cert-Transparency (crt.sh avec 3 tentatives + résolution DNS + CNAME suspendus / takeover), Injection-Fuzzer (SQLi/XSS/traversal sur cible autorisée, abort sur 429), URLScan-Search (scans publics urlscan.io).
+  - OSINT (38–42) : Email-Accounts-Checker (heuristique pages de reset, 16 plateformes), Email-Breach-Check (XposedOrNot sans clé), Instagram-OSINT (profil public sans clé API), Dork-Builder (dorks d'identité auto-générés), Roblox-ID-Info (fiche asset / place).
+  - Crypto (51–52) : Stegano-PNG (masquage/extraction LSB, décodeur PNG pur Python filtres 0–4), BIP39-Generator (12/24 mots, checksum, seed hex — vecteurs officiels BIP39 et TREZOR).
+  - Système (59) : WiFi-Profils (`netsh`/`nmcli` — profils enregistrés avec clés + réseaux visibles).
+- **Bannière géante ANSI Shadow** : `assets/banner_big.txt` (13 × 65) affichée en 4 frames (glitch 55 % → 30 % → 14 % → net), garde terminal ≥ 66×24, repli sur la fonte bloc.
+- **Wordlist BIP39 embarquée** : `fckmt/data/bip39_english.txt` (2048 mots, source officielle).
+- **Nouveaux fichiers modules** : `tracenet.py`, `webadv.py`, `osadv.py`, `cryptox.py`, `sysadv.py`.
+- **`start.bat` / `start.sh`** : ouvrent aussi le profil GitHub de l'auteur, en plus du repo.
+- **Selftest étendu** : 44 vérifications, dont roundtrip stégano, seed BIP39 zéro + vecteur TREZOR, payloads de fuzzing, services de takeover, sites de reset email.
+
+### Changé
+
+- Renumbering des modules : anciens 12–21 → 13–22, 22–33 → 26–37, 34–41 → 43–50, 42–47 → 53–58.
+- README, badges, menu (8 pages) et `USER_AGENT` à jour pour 59 modules — version 1.2.0.
+
 ## [1.1.0] — 2026-09-28
 
 ### Ajouté

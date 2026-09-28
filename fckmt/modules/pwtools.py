@@ -113,7 +113,7 @@ def _generate_passphrase(count=5, separator="-", capitalize=True, digit=True, sy
 
 
 def passphrase_generator():
-    ui.module_header(39, "Passphrase Generator", "Phrase de passe memorisable + entropie")
+    ui.module_header(48, "Passphrase Generator", "Phrase de passe memorisable + entropie")
     count = ui.ask_int("Nombre de mots", 5, 3, 12)
     separator = ui.ask("Separateur (- _ . espace)", "-")
     separator = {"_": "_", ".": ".", " ": " ", "-": "-"}.get(separator, "-")
@@ -253,7 +253,7 @@ def _ask_secret(message="Mot de passe (saisie masquee)"):
 
 
 def password_strength():
-    ui.module_header(40, "Password Strength", "Entropie, motifs faibles et temps de craquage estime")
+    ui.module_header(49, "Password Strength", "Entropie, motifs faibles et temps de craquage estime")
     password = _ask_secret()
     if not password:
         ui.info("Aucun mot de passe fourni.")
@@ -309,7 +309,7 @@ def _generate_secret():
 
 
 def totp_generator():
-    ui.module_header(41, "TOTP 2FA Generator", "Code temporel RFC 6238 (Google Authenticator...)")
+    ui.module_header(50, "TOTP 2FA Generator", "Code temporel RFC 6238 (Google Authenticator...)")
     mode = ui.ask_choice("Mode", ["generer", "utiliser", "verifier"], "generer")
     if mode == "generer":
         secret = _generate_secret()

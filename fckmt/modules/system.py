@@ -90,7 +90,7 @@ def ctypes_uptime():
 
 
 def system_info():
-    ui.module_header(42, "System Info", "Materiel, memoire, disques et reseau de la machine")
+    ui.module_header(53, "System Info", "Materiel, memoire, disques et reseau de la machine")
     hostname = socket.gethostname()
     try:
         user = os.getlogin()
@@ -184,7 +184,7 @@ def _entropy(data):
 
 
 def file_analyzer():
-    ui.module_header(43, "File Analyzer", "Type reel, hashs, entropie et apercu hexadecimal")
+    ui.module_header(54, "File Analyzer", "Type reel, hashs, entropie et apercu hexadecimal")
     path = ui.ask_required("Chemin du fichier").strip('"')
     if not os.path.isfile(path):
         ui.err("Fichier introuvable.")
@@ -246,7 +246,7 @@ def file_analyzer():
 
 
 def local_ports():
-    ui.module_header(44, "Local Ports", "Ports en ecoute sur cette machine + processus")
+    ui.module_header(55, "Local Ports", "Ports en ecoute sur cette machine + processus")
     rows = []
     if platform.system().lower().startswith("win"):
         try:

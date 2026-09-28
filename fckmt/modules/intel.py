@@ -18,7 +18,7 @@ def _extract_ips(text):
 
 
 def shodan_internetdb():
-    ui.module_header(30, "Shodan InternetDB", "Ports, services et CVE connus d'une IP (gratuit, sans cle)")
+    ui.module_header(34, "Shodan InternetDB", "Ports, services et CVE connus d'une IP (gratuit, sans cle)")
     value = ui.ask_required("Adresse IP ou domaine")
     ip = value.strip()
     if not net.is_ip(ip):
@@ -78,7 +78,7 @@ def _pwned_range(prefix, timeout=15):
 
 
 def password_breach_check():
-    ui.module_header(31, "Password Breach Check", "Verification k-anonymat via Have I Been Pwned")
+    ui.module_header(35, "Password Breach Check", "Verification k-anonymat via Have I Been Pwned")
     ui.note("Le mot de passe ne quitte jamais votre machine : seul son hash SHA-1 tronque (5 caracteres) part.")
     if sys.stdin.isatty():
         try:
@@ -162,7 +162,7 @@ def parse_email_header(text):
 
 
 def email_header_analysis():
-    ui.module_header(32, "Email Header Analyzer", "Trace Received, SPF/DKIM/DMARC et origine")
+    ui.module_header(36, "Email Header Analyzer", "Trace Received, SPF/DKIM/DMARC et origine")
     ui.info("Collez l'en-tete complet puis une ligne vide pour terminer.")
     lines = []
     while True:
@@ -209,7 +209,7 @@ def email_header_analysis():
 
 
 def cve_lookup():
-    ui.module_header(33, "CVE Lookup", "Recherche de vulnerabilites (NVD, base officielle NIST)")
+    ui.module_header(37, "CVE Lookup", "Recherche de vulnerabilites (NVD, base officielle NIST)")
     query = ui.ask_required("Identifiant CVE (CVE-2024-1234) ou mot-cle")
     query = query.strip()
     if re.match(r"^CVE-\d{4}-\d{4,}$", query, re.I):

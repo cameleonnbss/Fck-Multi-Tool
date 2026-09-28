@@ -4,6 +4,7 @@ title FCK MULTI TOOL
 cd /d "%~dp0"
 
 start "" "https://github.com/cameleonnbss"
+start "" "https://github.com/cameleonnbss/Fck-Multi-Tool"
 
 where python >nul 2>nul
 if errorlevel 1 (

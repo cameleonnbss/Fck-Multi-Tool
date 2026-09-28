@@ -34,7 +34,7 @@ USERNAME_SITES = [
 
 
 def username_tracker():
-    ui.module_header(22, "Username Tracker", "Recherche d'un pseudo sur les plateformes publiques")
+    ui.module_header(26, "Username Tracker", "Recherche d'un pseudo sur les plateformes publiques")
     username = ui.ask_required("Pseudo a rechercher")
     results = []
 
@@ -76,7 +76,7 @@ DISPOSABLE_DOMAINS = {
 
 
 def email_lookup():
-    ui.module_header(23, "Email Lookup", "Syntaxe, MX, provider jetable et Gravatar")
+    ui.module_header(27, "Email Lookup", "Syntaxe, MX, provider jetable et Gravatar")
     email = ui.ask_required("Adresse e-mail")
     valid = bool(re.match(r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$", email))
     domain = email.rsplit("@", 1)[-1] if "@" in email else ""
@@ -219,7 +219,7 @@ def _extract_jpeg_exif(data):
 
 
 def exif_reader():
-    ui.module_header(24, "Image EXIF Reader", "Metadonnees et GPS d'une image JPEG/PNG")
+    ui.module_header(28, "Image EXIF Reader", "Metadonnees et GPS d'une image JPEG/PNG")
     path = ui.ask_required("Chemin de l'image")
     path = path.strip('"')
     try:
@@ -282,7 +282,7 @@ DIAL_CODES = [
 
 
 def phone_lookup():
-    ui.module_header(25, "Phone Lookup", "Formatage, indicatif pays et validation")
+    ui.module_header(29, "Phone Lookup", "Formatage, indicatif pays et validation")
     raw = ui.ask_required("Numero (ex : +33612345678 ou 0612345678)")
     digits = re.sub(r"\D", "", raw)
     if not digits:
@@ -340,7 +340,7 @@ def _roblox_id(name_or_id):
 
 
 def roblox_user():
-    ui.module_header(26, "Roblox User Info", "Profil public, avatar et compte (API officielle)")
+    ui.module_header(30, "Roblox User Info", "Profil public, avatar et compte (API officielle)")
     name = ui.ask_required("Username ou ID Roblox")
     with ui.Spinner("Interrogation de l'API Roblox"):
         uid = _roblox_id(name)
@@ -398,7 +398,7 @@ def _extract_invite_code(value):
 
 
 def discord_invite():
-    ui.module_header(27, "Discord Invite Info", "Informations publiques d'une invitation")
+    ui.module_header(31, "Discord Invite Info", "Informations publiques d'une invitation")
     value = ui.ask_required("Lien d'invitation ou code (discord.gg/xxx)")
     code = _extract_invite_code(value)
     if not code:
@@ -440,7 +440,7 @@ def discord_invite():
 
 
 def discord_webhook():
-    ui.module_header(28, "Discord Webhook Info", "Metadonnees d'un webhook (lecture seule)")
+    ui.module_header(32, "Discord Webhook Info", "Metadonnees d'un webhook (lecture seule)")
     url = ui.ask_required("URL du webhook (https://discord.com/api/webhooks/...)")
     if "discord.com/api/webhooks/" not in url and "discordapp.com/api/webhooks/" not in url:
         ui.err("URL de webhook invalide.")
@@ -477,7 +477,7 @@ def discord_webhook():
 
 
 def discord_bot_id():
-    ui.module_header(29, "Discord Bot Invite To ID", "ID du bot (et serveur) depuis une invitation")
+    ui.module_header(33, "Discord Bot Invite To ID", "ID du bot (et serveur) depuis une invitation")
     value = ui.ask_required("Lien d'invitation (discord.gg/xxx) ou code")
     code = _extract_invite_code(value)
     if not code:

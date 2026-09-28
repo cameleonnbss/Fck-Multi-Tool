@@ -114,9 +114,9 @@ def run_selftest():
     print()
     check(f"Import du package (v{__version__})", __version__ == config.VERSION)
     entries = registry.entries()
-    check(f"Registre : {len(entries)} modules", len(entries) == registry.MODULE_COUNT == 47)
+    check(f"Registre : {len(entries)} modules", len(entries) == registry.MODULE_COUNT == 59)
     nums = [e["num"] for e in entries]
-    check("Numeros 1..47 uniques", sorted(nums) == list(range(1, 48)))
+    check("Numeros 1..59 uniques", sorted(nums) == list(range(1, 60)))
     check("Toutes les fonctions sont appelables", all(callable(e["func"]) for e in entries))
     pages = registry.build_pages()
     check("Pages du menu (10 modules max)", all(len(items) <= registry.PAGE_SIZE for _, items in pages))
@@ -128,6 +128,7 @@ def run_selftest():
     from fckmt.modules import osint as osint_mod
     from fckmt.modules import system as sys_mod
     from fckmt.modules import nettools, websec, intel, pwtools, sysaudit
+    from fckmt.modules import cryptox, webadv, osadv, tracenet, sysadv
     from fckmt import net as fnet
 
     import base64
@@ -195,6 +196,27 @@ def run_selftest():
 
     hibp = hashlib.sha1(b"password").hexdigest().upper()
     check("Hash SHA-1 local (vecteur HIBP)", hibp == "5BAA61E4C9B93F3F0682250B6CF8331B7EE68FD8")
+
+    zero_mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about"
+    check("BIP39 entropie zero (12 mots)", cryptox.bip39_mnemonic(bytes(16)) == zero_mnemonic)
+    check("BIP39 seed vecteur TREZOR",
+          cryptox.bip39_seed(zero_mnemonic, "TREZOR").hex()
+          == "c55257c360c07c72029aebc1b53c05ed0362ada38ead3e3e9efa3708e53495531f09a6987599d18264c1e1c92f2cf141630c7a3c4ab7c81b2f001698e7463b04")
+    valid, _info = cryptox.bip39_validate(zero_mnemonic)
+    bad_valid, _bad = cryptox.bip39_validate(zero_mnemonic.rsplit(" ", 1)[0] + " abandon")
+    check("BIP39 validation checksum", valid and not bad_valid)
+    check("Stegano PNG roundtrip", cryptox.png_lsb_roundtrip_test())
+    check("Payloads de fuzz", len(webadv.SQL_PAYLOADS) >= 8 and len(webadv.XSS_PAYLOADS) >= 4
+          and len(webadv.TRAVERSAL_PAYLOADS) >= 4)
+    check("Services a risque de takeover", len(webadv.TAKEOVER_SERVICES) >= 15)
+    check("Plateformes de reset email", len(osadv.RESET_SITES) >= 14)
+    check("Nouveaux modules 1.2 importables",
+          all(callable(f) for f in (tracenet.trace_http, webadv.cert_transparency,
+                                    webadv.injection_fuzzer, webadv.urlscan_search,
+                                    osadv.email_accounts_checker, osadv.email_breach_xon,
+                                    osadv.instagram_osint, osadv.dork_builder,
+                                    osadv.roblox_id_info, cryptox.stegano_png,
+                                    cryptox.bip39_generator, sysadv.wifi_profiles)))
     sample_header = (
         "Received: from mail.example.com (mail.example.com [203.0.113.7]) by mx.google.com with ESMTPS id ABC\r\n"
         "Received: from internal.local ([10.0.0.5]) by mail.example.com with ESMTP id DEF\r\n"
