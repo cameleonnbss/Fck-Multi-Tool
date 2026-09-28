@@ -51,10 +51,7 @@ def startup_animation(module_count=30, fast=False):
     if not fast:
         for i, row in enumerate(lines):
             color = ui.PALETTE[i % len(ui.PALETTE)]
-            shown = row
-            if i in (0, len(lines) - 1):
-                shown = ui.glitch_line(row, 0.08)
-            print(ui.paint(_center_line(shown), color, ui.K))
+            print(ui.paint(_center_line(row), color, ui.K))
             time.sleep(0.055)
         print()
         sub = f"{config.TOOL_NAME}  v{config.VERSION}  —  by {config.AUTHOR} ({config.AUTHOR_ALIAS})"
