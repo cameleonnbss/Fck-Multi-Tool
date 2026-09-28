@@ -25,6 +25,7 @@ except Exception:
     pass
 
 R = "\033[91m"
+DR = "\033[31m"
 G = "\033[92m"
 Y = "\033[93m"
 B = "\033[94m"
@@ -36,7 +37,7 @@ K = "\033[1m"
 U = "\033[4m"
 Z = "\033[0m"
 
-PALETTE = [M, C, G, Y, B, R, W]
+PALETTE = [R, W, R, DR, R]
 
 
 def paint(text, *styles):
@@ -53,23 +54,40 @@ def line(char="─", width=66, color=None):
 
 def title_box(title, subtitle=None):
     inner = 64
-    print(paint("  ╔" + "═" * inner + "╗", M))
-    print(paint("  ║" + title.center(inner) + "║", M, K))
+    print(paint("  ╔" + "═" * inner + "╗", R))
+    print(paint("  ║" + title.center(inner) + "║", R, K))
     if subtitle:
-        print(paint("  ║" + subtitle.center(inner) + "║", M))
-    print(paint("  ╚" + "═" * inner + "╝", M))
+        print(paint("  ║" + subtitle.center(inner) + "║", W))
+    print(paint("  ╚" + "═" * inner + "╝", R))
+
+
+def big_title(name, indent="  ", color=None):
+    from . import fonts
+
+    lines = fonts.pack_title(name)
+    if not lines:
+        return 0
+    count = 0
+    for chunk in lines:
+        for row in fonts.render(chunk):
+            if row:
+                print(paint(indent + row, color or R, K))
+                count += 1
+    return count
 
 
 def module_header(num, name, desc=""):
     print()
+    big_title(name)
+    print()
     l1 = f"  [{num:02d}]  {name}"
     l2 = f"      {desc}" if desc else ""
     width = max(len(l1), len(l2), 36)
-    print(paint("  ╔" + "═" * width + "╗", C))
-    print(paint("  ║" + l1.ljust(width) + "║", C, K))
+    print(paint("  ╔" + "═" * width + "╗", R))
+    print(paint("  ║" + l1.ljust(width) + "║", R, K))
     if l2:
-        print(paint("  ║" + l2.ljust(width) + "║", X))
-    print(paint("  ╚" + "═" * width + "╝", C))
+        print(paint("  ║" + l2.ljust(width) + "║", W))
+    print(paint("  ╚" + "═" * width + "╝", R))
     print()
 
 
@@ -90,11 +108,11 @@ def add(msg):
 
 
 def wait(msg):
-    print(paint(f"  [~]", C, K) + paint(f" | {msg}", W))
+    print(paint(f"  [~]", R, K) + paint(f" | {msg}", W))
 
 
 def note(msg):
-    print(paint(f"  [NOTE]", B, K) + paint(f" | {msg}", W))
+    print(paint(f"  [NOTE]", DR, K) + paint(f" | {msg}", W))
 
 
 def prompt_label():
@@ -199,7 +217,7 @@ class Spinner:
         i = 0
         while not self._stop.is_set():
             frame = frames[i % len(frames)]
-            sys.stdout.write("\r  " + paint(frame, C) + paint(f" {self.message}... ", X))
+            sys.stdout.write("\r  " + paint(frame, R) + paint(f" {self.message}... ", X))
             sys.stdout.flush()
             i += 1
             time.sleep(0.08)
@@ -219,14 +237,14 @@ class Spinner:
 
 def progress(label, current, total):
     if not total:
-        sys.stdout.write("\r  " + paint(f"[{current}]", G) + paint(f"  {label}...", X))
+        sys.stdout.write("\r  " + paint(f"[{current}]", R) + paint(f"  {label}...", X))
         sys.stdout.flush()
         return
     width = 30
     filled = int(width * current / max(total, 1))
     bar = "█" * filled + "░" * (width - filled)
     pct = int(100 * current / max(total, 1))
-    sys.stdout.write("\r  " + paint(f"[{bar}]", G) + paint(f" {pct:3d}%  {label}", X))
+    sys.stdout.write("\r  " + paint(f"[{bar}]", R) + paint(f" {pct:3d}%  {label}", X))
     sys.stdout.flush()
 
 

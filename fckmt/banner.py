@@ -5,20 +5,9 @@ import random
 
 from . import ui
 from . import config
+from . import fonts
 
-DEFAULT_BANNER = """\
-   █████▒▄████▄   ██ ▄█▀    
-███▄ ▄███▓ █    ██  ██▓  ▄▄▄█████▓ ██▓   ▄▄▄█████▓ ▒█████   ▒█████   ██▓     
-▓██   ▒▒██▀ ▀█   ██▄█▒    ▓██▒▀█▀ ██▒ ██  ▓██▒▓██▒  ▓  ██▒ ▓▒▓██▒   ▓  ██▒ ▓▒▒██▒  ██▒▒██▒  ██▒▓██▒    
-▒████ ░▒▓█    ▄ ▓███▄░    ▓██    ▓██░▓██  ▒██░▒██░  ▒ ▓██░ ▒░▒██▒   ▒ ▓██░ ▒░▒██░  ██▒▒██░  ██▒▒██░    
-░▓█▒  ░▒▓▓▄ ▄██▒▓██ █▄    ▒██    ▒██ ▓▓█  ░██░▒██░  ░ ▓██▓ ░ ░██░   ░ ▓██▓ ░ ▒██   ██░▒██   ██░▒██░    
-░▒█░   ▒ ▓███▀ ░▒██▒ █▄   ▒██▒   ░██▒▒▒█████▓ ░██████▒▒██▒ ░ ░██░     ▒██▒ ░ ░ ████▓▒░░ ████▓▒░░██████▒
- ▒ ░   ░ ░▒ ▒  ░▒ ▒▒ ▓▒   ▒ ░░   ░  ░░▒▓▒ ▒ ▒ ░ ▒░▓  ░▒ ░░   ░▓       ▒ ░░   ░ ▒░▒░▒░ ░ ▒░▒░▒░ ░ ▒░▓  ░
- ░       ░  ▒   ░ ░▒ ▒░   ░  ░      ░░░▒░ ░ ░ ░ ░ ▒  ░  ░     ▒ ░       ░      ░ ▒ ▒░   ░ ▒ ▒░ ░ ░ ▒  ░
- ░ ░   ░        ░ ░░ ░    ░      ░    ░░░ ░ ░   ░ ░   ░       ▒ ░     ░      ░ ░ ░ ▒  ░ ░ ░ ▒    ░ ░   
-       ░ ░      ░  ░             ░      ░         ░  ░        ░                  ░ ░      ░ ░      ░  ░
-       ░                                                                                                \
-"""
+DEFAULT_BANNER = "\n".join(fonts.render("FCK MULTI TOOL"))
 
 BANNER_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "assets", "banner.txt")
 
@@ -35,12 +24,15 @@ def load_banner():
 
 
 def _center_line(text, width=78):
-    try:
-        visible = sum(2 if ord(ch) > 0x2500 else 1 for ch in text)
-    except Exception:
-        visible = len(text)
+    visible = len(text)
     pad = max(0, (width - visible) // 2)
     return " " * pad + text
+
+
+def print_banner(color=None, width=78):
+    """Banniere statique (sans animation) — utilisee par --module."""
+    for row in load_banner().split("\n"):
+        print(ui.paint(_center_line(row, width), color or ui.R, ui.K))
 
 
 def startup_animation(module_count=30, fast=False):
@@ -56,17 +48,17 @@ def startup_animation(module_count=30, fast=False):
         print()
         sub = f"{config.TOOL_NAME}  v{config.VERSION}  —  by {config.AUTHOR} ({config.AUTHOR_ALIAS})"
         for ch in sub:
-            sys.stdout.write(ui.paint(ch, ui.Y, ui.K))
+            sys.stdout.write(ui.paint(ch, ui.R, ui.K))
             sys.stdout.flush()
             time.sleep(0.012)
-        print(ui.paint("   [ MIT · gratuit · " + str(module_count) + " modules ]", ui.X))
+        print(ui.paint("   [ MIT · gratuit · " + str(module_count) + " modules ]", ui.W))
         print()
 
         label = "Chargement des modules"
         for pct in range(0, 101, 2):
             filled = int(30 * pct / 100)
             bar = "█" * filled + "░" * (30 - filled)
-            sys.stdout.write("\r  " + ui.paint(f"[{bar}]", ui.G) + ui.paint(f" {pct:3d}%  {label}", ui.X))
+            sys.stdout.write("\r  " + ui.paint(f"[{bar}]", ui.R) + ui.paint(f" {pct:3d}%  {label}", ui.W))
             sys.stdout.flush()
             time.sleep(0.018)
         sys.stdout.write("\r" + " " * 70 + "\r")
@@ -79,5 +71,5 @@ def startup_animation(module_count=30, fast=False):
         sys.stdout.write("\r" + " " * 100 + "\r")
         sys.stdout.flush()
 
-    print(ui.paint(f"  [{module_count} modules charges · pret.]", ui.G, ui.K))
+    print(ui.paint(f"  [{module_count} modules charges · pret.]", ui.R, ui.K))
     time.sleep(0.25 if not fast else 0)
