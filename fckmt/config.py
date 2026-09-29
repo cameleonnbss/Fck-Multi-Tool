@@ -1,5 +1,5 @@
 TOOL_NAME = "FCK MULTI TOOL"
-VERSION = "1.2.0"
+VERSION = "1.3.0"
 AUTHOR = "camzzz"
 AUTHOR_ALIAS = "cameleonnbss"
 GITHUB = "https://github.com/cameleonnbss"
@@ -7,4 +7,4 @@ REPO = "https://github.com/cameleonnbss/Fck-Multi-Tool"
 RELEASES = REPO + "/releases"
 CONTACT = GITHUB
 LICENSE = "MIT"
-USER_AGENT = "FCK-Multi-Tool/1.2 (+https://github.com/cameleonnbss)"
+USER_AGENT = "FCK-Multi-Tool/1.3 (+https://github.com/cameleonnbss)"

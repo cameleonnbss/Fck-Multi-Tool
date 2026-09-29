@@ -1,4 +1,4 @@
-"""Module 59 — WiFi-Profils : profils et reseaux WiFi connus de la machine."""
+"""Modules 65-66 - systeme avance : profils WiFi et adresse MAC locale."""
 import os
 import re
 import shutil
@@ -120,7 +120,7 @@ def _linux_profiles():
 
 
 def wifi_profiles():
-    ui.module_header(59, "WiFi-Profils", "Profils WiFi enregistres (cles) et reseaux visibles de CETTE machine")
+    ui.module_header(65, "WiFi-Profils", "Profils WiFi enregistres (cles) et reseaux visibles de CETTE machine")
     ui.note("Lecture locale uniquement : vos propres profils, jamais une cible externe.")
     choice = ui.ask_choice(
         "Source",
@@ -162,3 +162,100 @@ def wifi_profiles():
 
     if lines:
         ui.save_output("wifi", "\n".join(lines))
+
+
+def _valid_mac(value):
+    """Normalise une adresse MAC ; retourne None si invalide."""
+    cleaned = re.sub(r"[^0-9A-Fa-f]", "", value or "")
+    if len(cleaned) != 12:
+        return None
+    return cleaned.upper()
+
+
+def _random_mac():
+    """MAC aleatoire a bit local administre (U/L = 1 sur le 2e octet)."""
+    import secrets
+
+    octets = [secrets.randbelow(256) for _ in range(6)]
+    octets[0] = (octets[0] | 0x02) & 0xFE
+    return "".join("%02X" % octet for octet in octets)
+
+
+def _mac_rows():
+    """Liste (interface, mac, detail) des interfaces de CETTE machine."""
+    rows = []
+    if os.name == "nt":
+        out = _run(["getmac", "/fo", "csv", "/v"])
+        try:
+            import csv
+            import io
+
+            for row in csv.reader(io.StringIO(out)):
+                if len(row) < 2:
+                    continue
+                mac = next((cell for cell in row if _valid_mac(cell)), None)
+                if mac:
+                    rows.append((row[0] or "?", mac, row[1] if len(row) > 1 else ""))
+        except Exception:
+            pass
+    else:
+        out = _run(["ip", "-o", "link", "show"])
+        for line in out.splitlines():
+            parts = line.split(":")
+            if len(parts) < 2:
+                continue
+            name = parts[1].split("@")[0].strip()
+            match = re.search(r"link/ether\s+([0-9A-Fa-f:]{17})", line)
+            if match and name:
+                rows.append((name, _valid_mac(match.group(1)), ""))
+    return rows
+
+
+def mac_changer():
+    ui.module_header(66, "MAC-Changer", "Adresse MAC de CETTE machine : lecture et changement local")
+    ui.note("Lecture seule par defaut : aucun changement sans confirmation explicite.")
+    rows = _mac_rows()
+    if not rows:
+        ui.err("Aucune interface lisible (getmac/ip absent ou droits insuffisants).")
+        return
+    ui.table(
+        ["Interface", "MAC", "Detail"],
+        [[name, mac, detail[:40]] for name, mac, detail in rows],
+        widths=[28, 20, 46],
+    )
+    ui.info("Changer d'adresse MAC peut deconnecter cette machine de ses reseaux.")
+    if not ui.confirm("Changer l'adresse MAC d'une interface ?", default=False):
+        ui.info("Lecture seule terminee.")
+        return
+
+    names = [name for name, _, _ in rows]
+    name = ui.ask("Interface (nom exact)", default=names[0] if names else "")
+    if name not in names:
+        ui.err(f"Interface inconnue : {name}")
+        return
+    target = ui.ask("Nouvelle MAC (Entree = aleatoire locale)")
+    mac = _valid_mac(target) or _random_mac()
+    if not ui.confirm(f"Appliquer {mac} sur {name} ?", default=False):
+        ui.info("Annule.")
+        return
+
+    if os.name == "nt":
+        _run(
+            ["powershell", "-NoProfile", "-Command",
+             f"Set-NetMacAddress -Name '{name}' -MacAddress '{mac}'"],
+            timeout=30,
+        )
+    else:
+        _run(["ip", "link", "set", "dev", name, "down"], timeout=15)
+        _run(["ip", "link", "set", "dev", name, "address", mac], timeout=15)
+        _run(["ip", "link", "set", "dev", name, "up"], timeout=15)
+
+    applied = any(m == mac for _, m, _ in _mac_rows())
+    if applied:
+        ui.ok(f"Adresse MAC appliquee : {name} -> {mac}")
+    else:
+        ui.err("MAC non appliquee — droits admin/root requis.")
+        if os.name == "nt":
+            ui.note("Manuel (PowerShell admin) : Set-NetMacAddress -Name 'X' -MacAddress 'YY...'")
+        else:
+            ui.note("Manuel (root) : ip link set dev X down && ip link set dev X address YY && ip link set dev X up")

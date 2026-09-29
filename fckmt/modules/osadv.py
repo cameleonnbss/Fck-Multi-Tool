@@ -1,4 +1,4 @@
-"""Modules 38-42 — OSINT avance : comptes email, fuites, Instagram, dorks, Roblox."""
+"""Modules 39-43 — OSINT avance : comptes email, fuites, Instagram, dorks, Roblox."""
 import json
 import re
 import time
@@ -35,7 +35,7 @@ FCK_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, l
 
 
 def email_accounts_checker():
-    ui.module_header(38, "Email-Accounts-Checker", "Quelles plateformes ont un compte pour cet email (heuristique)")
+    ui.module_header(39, "Email-Accounts-Checker", "Quelles plateformes ont un compte pour cet email (heuristique)")
     ui.note("Heuristique via pages de reinitialisation : resultat probable, pas une preuve. Emails que vous etes autorise a tester.")
     email = ui.ask_required("Adresse email").strip()
     if "@" not in email or email.startswith("@") or email.endswith("@"):
@@ -92,7 +92,7 @@ def email_accounts_checker():
 
 
 def email_breach_xon():
-    ui.module_header(39, "Email-Breach-Check", "Fuites et pastes d'un email via XposedOrNot (gratuit, sans cle)")
+    ui.module_header(40, "Email-Breach-Check", "Fuites et pastes d'un email via XposedOrNot (gratuit, sans cle)")
     email = ui.ask_required("Adresse email").strip()
     if "@" not in email:
         ui.err("Email invalide.")
@@ -166,7 +166,7 @@ def email_breach_xon():
 
 
 def instagram_osint():
-    ui.module_header(40, "Instagram-OSINT", "Profil public Instagram (API web, sans cle API)")
+    ui.module_header(41, "Instagram-OSINT", "Profil public Instagram (API web, sans cle API)")
     login = ui.ask_required("Pseudo (sans @)").strip().lstrip("@")
     if not login or " " in login:
         ui.err("Pseudo invalide.")
@@ -215,7 +215,7 @@ def instagram_osint():
 
 
 def dork_builder():
-    ui.module_header(41, "Dork-Builder", "Generateur de dorks d'identite (personne, compte, entreprise)")
+    ui.module_header(42, "Dork-Builder", "Generateur de dorks d'identite (personne, compte, entreprise)")
     ui.info("Champs optionnels — Entree pour passer.")
     first = ui.ask("Prenom", default="").strip()
     last = ui.ask("Nom", default="").strip()
@@ -296,7 +296,7 @@ def dork_builder():
 
 
 def roblox_id_info():
-    ui.module_header(42, "Roblox-ID-Info", "Fiche publique d'un asset ou d'une place Roblox")
+    ui.module_header(43, "Roblox-ID-Info", "Fiche publique d'un asset ou d'une place Roblox")
     mode = ui.ask_choice("Type d'identifiant", ["Asset (modele, gamepass...)", "Place (jeu)"], default="Asset (modele, gamepass...)")
     raw = ui.ask_required("Identifiant numerique").strip()
     if not raw.isdigit():

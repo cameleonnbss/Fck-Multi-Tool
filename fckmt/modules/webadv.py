@@ -1,4 +1,4 @@
-"""Modules 23-25 — avancee web : CT, fuzzing d'injection, urlscan.io."""
+"""Modules 24-26 — avancee web : CT, fuzzing d'injection, urlscan.io."""
 import concurrent.futures
 import json
 import time
@@ -76,7 +76,7 @@ TRAVERSAL_SIGNATURES = [
 
 
 def cert_transparency():
-    ui.module_header(23, "Cert-Transparency", "Sous-domaines certifies (crt.sh) + CNAME suspendus")
+    ui.module_header(24, "Cert-Transparency", "Sous-domaines certifies (crt.sh) + CNAME suspendus")
     raw = ui.ask_required("Domaine (exemple.com)")
     parsed = urlparse(raw if "://" in raw else "http://" + raw)
     domain = (parsed.hostname or "").lower().strip(".")
@@ -168,7 +168,7 @@ def cert_transparency():
 
 
 def injection_fuzzer():
-    ui.module_header(24, "Injection-Fuzzer", "Fuzzing de parametre d'URL : SQLi, XSS reflet, traversal")
+    ui.module_header(25, "Injection-Fuzzer", "Fuzzing de parametre d'URL : SQLi, XSS reflet, traversal")
     ui.note("A tester uniquement sur des systemes dont vous etes autorise a evaluer la securite.")
     target = ui.ask_required("URL avec parametre (https://site.tld/page?id=1)").strip()
     if "://" not in target:
@@ -270,7 +270,7 @@ def injection_fuzzer():
 
 
 def urlscan_search():
-    ui.module_header(25, "URLScan-Search", "Scans publics urlscan.io d'un domaine (captures, verdicts)")
+    ui.module_header(26, "URLScan-Search", "Scans publics urlscan.io d'un domaine (captures, verdicts)")
     raw = ui.ask_required("Domaine ou URL (exemple.com)")
     parsed = urlparse(raw if "://" in raw else "http://" + raw)
     domain = (parsed.hostname or raw).lower().strip(".")

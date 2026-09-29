@@ -6,8 +6,21 @@ import time
 from fckmt import __version__, banner, config, fonts, registry, ui
 
 
-def render_menu(pages, page_index, window_mode):
+def _page_push(page_index):
+    """Transition rapide entre pages (push glitch rouge)."""
+    frame = f"««  P A G E   {page_index + 1}  »»"
+    for _ in range(2):
+        sys.stdout.write("\r  " + ui.paint(ui.glitch_line(frame, 0.35), ui.R, ui.K))
+        sys.stdout.flush()
+        time.sleep(0.05)
+    sys.stdout.write("\r" + " " * 44 + "\r")
+    sys.stdout.flush()
+
+
+def render_menu(pages, page_index, window_mode, transition=False):
     category, items = pages[page_index]
+    if transition:
+        _page_push(page_index)
     ui.clear()
     print(ui.paint("  ╔" + "═" * 64 + "╗", ui.R))
     print(ui.paint("  ║" + config.TOOL_NAME.center(64) + "║", ui.R, ui.K))
@@ -18,10 +31,18 @@ def render_menu(pages, page_index, window_mode):
     header = f"  │  {category}  —  page {page_index + 1}/{len(pages)}"
     print(ui.paint(header.ljust(67) + "│", ui.DR, ui.K))
     print(ui.paint("  ├" + "─" * 64 + "┤", ui.DR))
-    for num, key, desc, _func in items:
-        head = "  │  " + f"[{num:02d}] " + key.ljust(26)
-        desc_t = desc[:31].ljust(31)
-        print(ui.paint(head, ui.W, ui.K) + ui.paint(desc_t, ui.X) + ui.paint("│", ui.DR))
+    total = len(items)
+    for index, (num, key, desc, _func) in enumerate(items):
+        marker = "└─ " if index == total - 1 else "├─ "
+        bracket = ui.paint("[", ui.R, ui.K) + ui.paint(f"{num:02d}", ui.W, ui.K) + ui.paint("]", ui.R, ui.K)
+        left = "  │  " + marker
+        mid = key.ljust(24)
+        right = desc[:30].ljust(30)
+        print(
+            ui.paint(left, ui.DR) + bracket + " "
+            + ui.paint(mid, ui.W) + ui.paint(right, ui.X)
+            + ui.paint("│", ui.DR)
+        )
     print(ui.paint("  └" + "─" * 64 + "┘", ui.DR))
     print()
     mode = "fenetre" if window_mode else "local"
@@ -114,9 +135,9 @@ def run_selftest():
     print()
     check(f"Import du package (v{__version__})", __version__ == config.VERSION)
     entries = registry.entries()
-    check(f"Registre : {len(entries)} modules", len(entries) == registry.MODULE_COUNT == 59)
+    check(f"Registre : {len(entries)} modules", len(entries) == registry.MODULE_COUNT == 66)
     nums = [e["num"] for e in entries]
-    check("Numeros 1..59 uniques", sorted(nums) == list(range(1, 60)))
+    check("Numeros 1..66 uniques", sorted(nums) == list(range(1, 67)))
     check("Toutes les fonctions sont appelables", all(callable(e["func"]) for e in entries))
     pages = registry.build_pages()
     check("Pages du menu (10 modules max)", all(len(items) <= registry.PAGE_SIZE for _, items in pages))
@@ -129,6 +150,7 @@ def run_selftest():
     from fckmt.modules import system as sys_mod
     from fckmt.modules import nettools, websec, intel, pwtools, sysaudit
     from fckmt.modules import cryptox, webadv, osadv, tracenet, sysadv
+    from fckmt.modules import stress, shells, sniff, obfusc, hashid, wordlist
     from fckmt import net as fnet
 
     import base64
@@ -217,6 +239,57 @@ def run_selftest():
                                     osadv.instagram_osint, osadv.dork_builder,
                                     osadv.roblox_id_info, cryptox.stegano_png,
                                     cryptox.bip39_generator, sysadv.wifi_profiles)))
+    check("Nouveaux modules 1.3 importables",
+          all(callable(f) for f in (stress.stress_test, shells.shell_generator,
+                                    sniff.packet_sniffer, obfusc.code_obfuscator,
+                                    hashid.hash_identifier, wordlist.wordlist_factory,
+                                    sysadv.mac_changer)))
+
+    scaler = stress.AdaptiveScaler(4, 400)
+    up_first = scaler.update(20, 0)
+    up_more = scaler.update(20, 0)
+    down = scaler.update(0, 80)
+    check("Stress-Test : scaler adaptatif (monte/descend)", up_first >= 4 and up_more > up_first and down < up_more)
+
+    payloads = shells.build_payloads("10.0.0.5", 4444)
+    check("Shell-Generator : payloads reverse substitues",
+          bool(payloads) and all("10.0.0.5" in cmd and "4444" in cmd for cmd in payloads.values()))
+
+    fake_ipv4 = (bytes([0x45, 0x00, 0x00, 40]) + bytes(8)
+                 + bytes([127, 0, 0, 1]) + bytes([192, 168, 1, 10]) + bytes(8))
+    parsed = sniff.parse_ipv4(fake_ipv4)
+    check("Packet-Sniffer : parse IPv4",
+          parsed is not None and parsed.get("src") == "127.0.0.1" and parsed.get("dst") == "192.168.1.10")
+
+    sha256_sample = "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+    bcrypt_sample = "$2b$12$usesomesillystringfore7hnbRJHxXVLeakoG8K30oukPsA.ztMG"
+    check("Hash-Identifier : md5 / sha256 / bcrypt",
+          hashid.identify(md5_test)[0] == "md5"
+          and hashid.identify(sha256_sample)[0] == "sha256"
+          and hashid.identify(bcrypt_sample)[0] == "bcrypt")
+
+    leet = wordlist.mutate_leet("password")
+    check("Wordlist-Factory : mutations leet", "p@ssw0rd" in leet and "p4ssw0rd" in leet)
+    check("Wordlist-Factory : combinatorio", len(wordlist.combinator(["admin"], ["1", "2"])) == 10)
+
+    def _exec_ok(code):
+        try:
+            exec(code, {})
+            return True
+        except Exception:
+            return False
+
+    probe = "x = 1\n# commentaire\nassert x + 1 == 2"
+    check("Code-Obfuscator : 4 modes executables",
+          all(_exec_ok(obfusc.obfuscate(probe, mode)) for mode in ("minify", "strings", "zlib", "hex")))
+    check("Code-Obfuscator : zlib masque le source",
+          "assert x + 1 == 2" not in obfusc.obfuscate(probe, "zlib"))
+
+    check("MAC-Changer : validation MAC",
+          sysadv._valid_mac("aa-bb-cc-dd-ee-ff") == "AABBCCDDEEFF" and sysadv._valid_mac("zz") is None)
+    mac_rand = sysadv._random_mac()
+    check("MAC-Changer : MAC aleatoire locale",
+          len(mac_rand) == 12 and int(mac_rand[:2], 16) & 0x02 == 0x02)
     sample_header = (
         "Received: from mail.example.com (mail.example.com [203.0.113.7]) by mx.google.com with ESMTPS id ABC\r\n"
         "Received: from internal.local ([10.0.0.5]) by mail.example.com with ESMTP id DEF\r\n"
@@ -302,21 +375,32 @@ def main():
     banner.startup_animation(registry.MODULE_COUNT, fast=args.no_anim)
     pages = registry.build_pages()
     page = 0
+    transition = False
     window_mode = sys.platform == "win32" and _interactive()
     while True:
-        render_menu(pages, page, window_mode)
+        render_menu(pages, page, window_mode, transition=transition)
+        transition = False
+        prompt = (
+            ui.paint(f"  {config.AUTHOR}@fckmt", ui.W, ui.K)
+            + ui.paint(" ~ ", ui.X)
+            + ui.paint(f"[menu-{page + 1}]", ui.R, ui.K)
+            + ui.paint("$ ", ui.W)
+        )
         try:
-            choice = ui.ask("Choix").lower()
-        except SystemExit:
-            raise
+            choice = input(prompt).strip().lower()
+        except (EOFError, KeyboardInterrupt):
+            print()
+            return 0
         if choice in ("q", "quit", "exit", "00"):
             print(ui.paint("  A bientot — " + config.AUTHOR + " (" + config.AUTHOR_ALIAS + ")", ui.G, ui.K))
             return 0
         if choice in ("n", "next", "+"):
             page = (page + 1) % len(pages)
+            transition = True
             continue
         if choice in ("p", "prev", "-"):
             page = (page - 1) % len(pages)
+            transition = True
             continue
         if choice in ("f", "fenetre", "window"):
             window_mode = not window_mode

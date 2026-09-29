@@ -34,7 +34,7 @@ SECURITY_HEADERS = [
 
 
 def site_info():
-    ui.module_header(13, "Website Info Scanner", "En-tetes, technologies, robots, score de securite")
+    ui.module_header(14, "Website Info Scanner", "En-tetes, technologies, robots, score de securite")
     url = normalize_url(ui.ask_required("URL du site (ex : example.com)"))
     with ui.Spinner("Analyse de la page"):
         resp = net.http_get(url, timeout=12)
@@ -149,7 +149,7 @@ SQLI_PATTERNS = [
 
 
 def vuln_scan():
-    ui.module_header(14, "Website Vuln Scanner", "Fichiers sensibles, injections SQL/XSS, misconfig")
+    ui.module_header(15, "Website Vuln Scanner", "Fichiers sensibles, injections SQL/XSS, misconfig")
     url = normalize_url(ui.ask_required("URL du site a tester"))
     base = url.rstrip("/")
     findings = []
@@ -259,7 +259,7 @@ class _LinkParser(HTMLParser):
 
 
 def url_scan():
-    ui.module_header(15, "Website URL Scanner", "Exploration des liens, forms et mails d'une page")
+    ui.module_header(16, "Website URL Scanner", "Exploration des liens, forms et mails d'une page")
     url = normalize_url(ui.ask_required("URL de depart"))
     with ui.Spinner("Telechargement de la page"):
         resp = net.http_get(url, timeout=12)
@@ -311,7 +311,7 @@ def url_scan():
 
 
 def ssl_check():
-    ui.module_header(16, "SSL Cert Checker", "Certificat, chaine de confiance et expiration")
+    ui.module_header(17, "SSL Cert Checker", "Certificat, chaine de confiance et expiration")
     host = ui.ask_required("Domaine (ex : example.com)")
     port = ui.ask_int("Port TLS", 443, 1, 65535)
     with ui.Spinner("Connexion TLS"):
@@ -377,7 +377,7 @@ DORK_TEMPLATES = [
 
 
 def google_dorking():
-    ui.module_header(17, "Google Dorking", "Generation de requetes de recherche avancee")
+    ui.module_header(18, "Google Dorking", "Generation de requetes de recherche avancee")
     target = ui.ask_required("Cible (domaine ou mot-cle)")
     target = target.replace("https://", "").replace("http://", "").strip("/")
     dorks = [tpl.format(target=target) for tpl in DORK_TEMPLATES]

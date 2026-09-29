@@ -71,7 +71,7 @@ def _extract_strings(data, min_len=4):
 
 
 def strings_extractor():
-    ui.module_header(56, "Strings Extractor", "Chaines ASCII/UTF-16 et URLs cachees dans un fichier")
+    ui.module_header(62, "Strings Extractor", "Chaines ASCII/UTF-16 et URLs cachees dans un fichier")
     path = ui.ask_required("Chemin du fichier")
     if not os.path.isfile(path):
         ui.err("Fichier introuvable.")
@@ -182,7 +182,7 @@ def parse_pe(path, max_section_read=4 * 1024 * 1024):
 
 
 def pe_parser():
-    ui.module_header(57, "PE Header Parser", "Structure d'un executable Windows (lecture seule)")
+    ui.module_header(63, "PE Header Parser", "Structure d'un executable Windows (lecture seule)")
     path = ui.ask_required("Chemin du .exe/.dll")
     if not os.path.isfile(path):
         ui.err("Fichier introuvable.")
@@ -335,7 +335,7 @@ def _unix_audit():
 
 
 def local_security_audit():
-    ui.module_header(58, "Local Security Audit", "Etat de securite de cette machine (lecture seule)")
+    ui.module_header(64, "Local Security Audit", "Etat de securite de cette machine (lecture seule)")
     ui.note("Audit strictement en lecture : aucune configuration n'est modifiee.")
     with ui.Spinner("Collecte des etats systeme"):
         if os.name == "nt":

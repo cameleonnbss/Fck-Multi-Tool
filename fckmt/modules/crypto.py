@@ -28,7 +28,7 @@ def _digest(algo, data):
 
 
 def hash_generator():
-    ui.module_header(43, "Hash Generator", "Hashs MD5/SHA/BLAKE2 d'un texte ou d'un fichier")
+    ui.module_header(44, "Hash Generator", "Hashs MD5/SHA/BLAKE2 d'un texte ou d'un fichier")
     mode = ui.ask_choice("Source : texte (t) ou fichier (f)", ["t", "f"], "t")
     if mode == "t":
         text = ui.ask_required("Texte a hacher")
@@ -63,7 +63,7 @@ def identify_hash(value):
 
 
 def hash_cracker():
-    ui.module_header(44, "Hash Cracker", "Identification et craquage par wordlist / force brute")
+    ui.module_header(45, "Hash Cracker", "Identification et craquage par wordlist / force brute")
     target = ui.ask_required("Hash a craquer").strip().lower()
     identified = identify_hash(target)
     if identified:
@@ -131,7 +131,7 @@ def hash_cracker():
 
 
 def zip_cracker():
-    ui.module_header(45, "Zip Cracker", "Ouverture d'une archive ZIP chiffree par wordlist")
+    ui.module_header(46, "Zip Cracker", "Ouverture d'une archive ZIP chiffree par wordlist")
     path = ui.ask_required("Chemin de l'archive .zip").strip('"')
     if not os.path.isfile(path):
         ui.err("Fichier introuvable.")
@@ -184,7 +184,7 @@ def zip_cracker():
 
 
 def encoders():
-    ui.module_header(46, "Encodeur / Decodeur", "Base64, Base32, Hex, URL, ROT13, Binaire, Caesar")
+    ui.module_header(47, "Encodeur / Decodeur", "Base64, Base32, Hex, URL, ROT13, Binaire, Caesar")
     operations = [
         ("1", "Base64 encoder"), ("2", "Base64 decoder"),
         ("3", "Base32 encoder"), ("4", "Base32 decoder"),
@@ -263,7 +263,7 @@ def _caesar(text, shift):
 
 
 def password_generator():
-    ui.module_header(47, "Password Generator", "Mots de passe aleatoires avec entropie mesuree")
+    ui.module_header(48, "Password Generator", "Mots de passe aleatoires avec entropie mesuree")
     length = ui.ask_int("Longueur", 16, 4, 128)
     count = ui.ask_int("Nombre de mots de passe", 5, 1, 50)
     use_upper = ui.ask_choice("Majuscules ?", ["o", "n"], "o") == "o"

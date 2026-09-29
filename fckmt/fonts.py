@@ -103,9 +103,7 @@ def print_block(text, color=None, indent="", block="█"):
         print(ui.paint(indent + row, color) if color else indent + row)
 
 
-def pack_title(name, max_chars=14, max_lines=3):
-    """Decoupe un titre de module en lignes courtes pour l'art ASCII."""
-    words = [w for w in str(name).upper().replace("-", " ").split() if w]
+def _pack_words(words, max_chars):
     lines = []
     current = ""
     for word in words:
@@ -118,6 +116,32 @@ def pack_title(name, max_chars=14, max_lines=3):
             current = word
     if current:
         lines.append(current)
-    if len(lines) > max_lines or max(len(l) for l in lines) > max_chars + 6:
-        return []
     return lines
+
+
+def _hard_split(words, max_chars):
+    """Repli : coupe net a max_chars, meme au-dela de max_lines."""
+    chopped = []
+    for word in words:
+        while len(word) > max_chars:
+            chopped.append(word[:max_chars])
+            word = word[max_chars:]
+        if word:
+            chopped.append(word)
+    return _pack_words(chopped, max_chars)
+
+
+def pack_title(name, max_chars=14, max_lines=3):
+    """Decoupe un titre de module en lignes courtes pour l'art ASCII.
+
+    Repli : si la decoupe douce deborde (trop de lignes ou ligne trop
+    large), on retombe sur une coupure dure par paquets de max_chars —
+    le titre est toujours rendu, jamais vide pour un nom non vide.
+    """
+    words = [w for w in str(name).upper().replace("-", " ").split() if w]
+    if not words:
+        return []
+    lines = _pack_words(words, max_chars)
+    if len(lines) <= max_lines and max(len(l) for l in lines) <= max_chars + 6:
+        return lines
+    return _hard_split(words, max_chars) or lines

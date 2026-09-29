@@ -1,4 +1,4 @@
-"""Modules 51-52 — crypto : steganographie PNG (LSB) et BIP39."""
+"""Modules 52-53 — crypto : steganographie PNG (LSB) et BIP39."""
 import hashlib
 import os
 import struct
@@ -243,7 +243,7 @@ def bip39_validate(mnemonic):
 
 
 def stegano_png():
-    ui.module_header(51, "Stegano-PNG", "Dissimuler / extraire un message dans un PNG (LSB)")
+    ui.module_header(52, "Stegano-PNG", "Dissimuler / extraire un message dans un PNG (LSB)")
     mode = ui.ask_choice("Mode", ["Encoder un message", "Decoder un message"], default="Encoder un message")
     path = ui.ask_required("Chemin du fichier PNG").strip().strip('"')
     try:
@@ -303,7 +303,7 @@ def stegano_png():
 
 
 def bip39_generator():
-    ui.module_header(52, "BIP39-Generator", "Seed phrase BIP39 (12/24 mots) — generation locale, rien n'est envoye")
+    ui.module_header(53, "BIP39-Generator", "Seed phrase BIP39 (12/24 mots) — generation locale, rien n'est envoye")
     mode = ui.ask_choice("Mode", ["Generer", "Verifier une phrase"], default="Generer")
 
     if mode.startswith("Verifier"):

@@ -3,6 +3,26 @@
 Toutes les notable changes à FCK MULTI TOOL sont documentées ici.
 Format inspiré de [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.3.0] — 2026-09-29
+
+### Ajouté
+
+- **7 nouveaux modules** (59 → 66) :
+  - Réseau (13) : Stress-Test — test de charge multi-vecteurs (UDP-Flood, HTTP-GET, HTTP-POST, Slowloris, TCP-Connect, mixte), pool de threads adaptatif (`AdaptiveScaler`), stats en direct, confirmation d'autorisation obligatoire, vecteurs directs uniquement.
+  - Crypto (54–55) : Hash-Identifier (60+ signatures : bcrypt, argon2, scrypt, phpass, md5crypt/sha256crypt/sha512crypt, JWT, MD5, SHA…), Wordlist-Factory (mutations leet par produit cartésien, casse, années/suffixes, combinatorio, plafond 500 000 lignes).
+  - **Nouvelle catégorie « PENTEST & OFFENSIVE » (56–58)** : Shell-Generator (reverse/bind bash, Python, PowerShell, PHP, Ruby, Perl, nc/ncat/socat + listeners + références msfvenom), Packet-Sniffer (scapy si présent, sinon socket brut avec `select`, filtres host/port, capture locale en lecture seule), Code-Obfuscator (minification par `tokenize`, chaînes en base64, wrappers zlib/hex — sortie vérifiée par `compile` avant écriture).
+  - Système (66) : MAC-Changer (validation, MAC aléatoire, changement `netsh` / `ip link` / `ipconfig`).
+- **Animation d'ouverture refaite** (`banner.py`) : phase de boot colorée (lignes système en RGB, barre de progression, semis hexadécimaux), puis bannière héro (`assets/banner_big.txt`, art sur mesure du dépôt) en 4 frames de glitch → net, effet de frappe sur la ligne d'auteur, barre de chargement des modules, surlignage glitch final.
+- **Menu en arbre** : lignes `├─ [NN]`, transition glitch entre les pages, prompt `camzzz@fckmt ~ [menu-N]$`.
+- **Repli `pack_title`** (`fonts.py`) : coupure dure par paquets de 14 caractères — un titre de module trop long est toujours rendu en art ASCII (plus jamais de titre vide).
+- **Selftest étendu** : 56 vérifications, dont scaler adaptatif, payloads reverse shell, parseur IPv4, identification de hash, mutations leet, combinatorio, 4 modes d'obfuscation, normalisation MAC.
+
+### Changé
+
+- Renumbering complet en 1..66 par catégorie : Réseau/Web/OSINT/Crypto inchangés en tête, nouveau module 13 (Stress-Test), web/websec/webadv/osint/intel/osadv/crypto/pwtools/cryptox +1, system/sysaudit/sysadv +6.
+- 6 catégories, 10 pages de menu (contre 8 en 1.2.0).
+- README, badges, menu et `USER_AGENT` à jour pour 66 modules — version 1.3.0.
+
 ## [1.2.0] — 2026-09-28
 
 ### Ajouté

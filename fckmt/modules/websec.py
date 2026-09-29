@@ -96,7 +96,7 @@ def _hs_verify(signing_input, secret, alg):
 
 
 def jwt_analyzer():
-    ui.module_header(22, "JWT Analyzer", "Analyse d'un JSON Web Token (entete, claims, signature)")
+    ui.module_header(23, "JWT Analyzer", "Analyse d'un JSON Web Token (entete, claims, signature)")
     ui.info("Collez votre JWT (3 parties base64url). Entree seule pour annuler.")
     token = ui.ask("JWT")
     if not token:
@@ -178,7 +178,7 @@ def jwt_analyzer():
 
 
 def dir_brute():
-    ui.module_header(18, "Directory Brute", "Decouverte de chemins et fichiers publics")
+    ui.module_header(19, "Directory Brute", "Decouverte de chemins et fichiers publics")
     ui.note("A utiliser uniquement sur des sites dont vous etes autorise a tester la securite.")
     target = normalize_url(ui.ask_required("URL de base (ex : https://site.tld)"))
     custom = ui.ask("Fichier wordlist (Entree = liste integree)")
@@ -251,7 +251,7 @@ CORS_TEST_ORIGINS = [
 
 
 def cors_scan():
-    ui.module_header(19, "CORS Scanner", "Verification des en-tetes Cross-Origin")
+    ui.module_header(20, "CORS Scanner", "Verification des en-tetes Cross-Origin")
     url = normalize_url(ui.ask_required("URL a tester"))
     extra = ui.ask("Origine custom (Entree = ignoree)")
     origins = list(CORS_TEST_ORIGINS)
@@ -337,7 +337,7 @@ TECH_MARKERS = [
 
 
 def tech_fingerprint():
-    ui.module_header(20, "Tech Fingerprint", "Detection CDN/WAF, CMS, frameworks et scripts")
+    ui.module_header(21, "Tech Fingerprint", "Detection CDN/WAF, CMS, frameworks et scripts")
     url = normalize_url(ui.ask_required("URL du site"))
     with ui.Spinner("Telechargement de la page"):
         resp = net.http_get(url, timeout=15)
@@ -397,7 +397,7 @@ WAYBACK_SENSITIVE = [
 
 
 def wayback_history():
-    ui.module_header(21, "Wayback URL History", "URLs historisees par l'archive web (CDX)")
+    ui.module_header(22, "Wayback URL History", "URLs historisees par l'archive web (CDX)")
     domain = ui.ask_required("Domaine (ex : example.com)").strip().lower()
     domain = domain.replace("https://", "").replace("http://", "").strip("/")
     limit = ui.ask_int("Nombre d'URLs a recuperer", 300, 10, 5000)
